@@ -140,6 +140,28 @@ export default function SignupPage() {
               <input
                 id="fullName"
                 type="text"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                className={cn("input pl-10", errors.fullName && "border-destructive")}
+                placeholder="Enter your full name"
+                required
+                disabled={loading}
+              />
+            </div>
+            {errors.fullName && (
+              <p className="text-xs text-destructive">{errors.fullName}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="companyName" className="text-sm font-medium">
+              Company Name
+            </label>
+            <div className="relative">
+              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <input
+                id="companyName"
+                type="text"
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                 className={cn("input pl-10", errors.companyName && "border-destructive")}
@@ -311,26 +333,4 @@ export default function SignupPage() {
       </div>
     </div>
   )
-}Data.fullName}
-                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className={cn("input pl-10", errors.fullName && "border-destructive")}
-                placeholder="Enter your full name"
-                required
-                disabled={loading}
-              />
-            </div>
-            {errors.fullName && (
-              <p className="text-xs text-destructive">{errors.fullName}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="companyName" className="text-sm font-medium">
-              Company Name
-            </label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                id="companyName"
-                type="text"
-                value={form
+}
