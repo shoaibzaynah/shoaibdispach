@@ -1,10 +1,9 @@
 import OpenAI from 'openai'
 import { createClient } from '@/utils/supabase/server'
 import { CourierAPIFactory } from './courierAPIs'
-import { Dispatch, CourierAPI } from '@/types'
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.OPENAI_API_KEY, // Use environment variable instead of hardcoded key
 })
 
 interface GPTFunction {
@@ -303,25 +302,6 @@ export class AdvancedGPTService {
 
     if (updateError) throw updateError
 
-    // Try to cancel with courier API if available
-    const { data: courierConfig } = await supabase
-      .from('tenant_courier_apis')
-      .select('*')
-      .eq('tenant_id', tenantId)
-      .eq('courier', shipment.courier)
-      .eq('api_type', 'cancel')
-      .single()
-
-    if (courierConfig) {
-      try {
-        const courierAPI = CourierAPIFactory.createAPI(shipment.courier, courierConfig)
-        // Assuming courier APIs have cancel method
-        // await courierAPI.cancelShipment(trackingNumber, reason)
-      } catch (error) {
-        console.error('Courier cancellation failed:', error)
-      }
-    }
-
     return { success: true, message: 'Shipment cancelled successfully' }
   }
 
@@ -405,32 +385,8 @@ export class AdvancedGPTService {
   private async createShipment(tenantId: string, shipmentData: any) {
     const supabase = await createClient()
     
-    // Get courier API config
-    const { data: courierConfig } = await supabase
-      .from('tenant_courier_apis')
-      .select('*')
-      .eq('tenant_id', tenantId)
-      .eq('courier', shipmentData.courier)
-      .eq('api_type', 'booking')
-      .single()
-
     let trackingNumber = `LBC${Date.now()}`
     let courierResponse = null
-
-    if (courierConfig) {
-      try {
-        // Create booking with real courier API
-        const courierAPI = CourierAPIFactory.createAPI(shipmentData.courier, courierConfig)
-        const bookingResult = await courierAPI.createBooking(shipmentData)
-        
-        if (bookingResult.success && bookingResult.tracking_number) {
-          trackingNumber = bookingResult.tracking_number
-          courierResponse = bookingResult
-        }
-      } catch (error) {
-        console.error('Courier booking failed:', error)
-      }
-    }
 
     // Save to database
     const { data: shipment, error } = await supabase
@@ -506,188 +462,3 @@ export class AdvancedGPTService {
     }, {
       total_orders: 0,
       total_revenue: 0,
-      delivered_orders: 0,
-      delivered_revenue: 0
-    })
-
-    return stats
-  }
-
-  private async searchByAmount(tenantId: string, minAmount: number, maxAmount: number) {
-    const supabase = await createClient()
-    
-    const { data, error } = await supabase
-      .from('courier_dispatches')
-      .select('*')
-      .eq('tenant_id', tenantId)
-      .gte('cod_amount', minAmount)
-      .lte('cod_amount', maxAmount)
-      .order('cod_amount', { ascending: false })
-
-    if (error) throw error
-    return data || []
-  }
-
-  async processAdvancedQuery(userId: string, message: string, conversationHistory: any[] = []) {
-    try {
-      // Get user context
-      const userContext = await this.getUserContext(userId)
-      if (!userContext?.tenant_id) {
-        throw new Error('User not associated with any tenant')
-      }
-
-      const tenantId = userContext.tenant_id
-
-      // Create system prompt with context
-      const systemPrompt = `You are an AI assistant for Lobocubs Courier Manager. You have access to a tenant's complete shipment data and can perform various operations.
-
-Current User: ${userContext.full_name || userContext.email}
-Tenant: ${userContext.tenants?.name || 'Unknown'}
-Tenant ID: ${tenantId}
-
-You can:
-- Search shipments by tracking number, customer name, phone, or any criteria
-- Track shipments and get live updates
-- Cancel shipments with reasons
-- Get customer-specific shipment history
-- Get courier performance statistics
-- Create new shipments
-- Get revenue and financial stats
-- Search by COD amount ranges
-
-Always be helpful, accurate, and provide detailed information. When showing data, format it nicely for readability.`
-
-      // Prepare messages for GPT
-      const messages = [
-        { role: 'system', content: systemPrompt },
-        ...conversationHistory,
-        { role: 'user', content: message }
-      ]
-
-      // Call GPT with function calling
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: messages as any,
-        functions: AVAILABLE_FUNCTIONS,
-        function_call: 'auto',
-        max_tokens: 1500,
-        temperature: 0.1
-      })
-
-      const response = completion.choices[0]?.message
-      
-      if (response?.function_call) {
-        // Execute the requested function
-        const functionName = response.function_call.name
-        const functionArgs = JSON.parse(response.function_call.arguments || '{}')
-        
-        let functionResult: any = null
-        
-        switch (functionName) {
-          case 'search_shipments':
-            functionResult = await this.searchShipments(
-              tenantId,
-              functionArgs.query,
-              functionArgs.courier,
-              functionArgs.status,
-              functionArgs.limit
-            )
-            break
-            
-          case 'track_shipment':
-            functionResult = await this.trackShipment(tenantId, functionArgs.tracking_number)
-            break
-            
-          case 'cancel_shipment':
-            functionResult = await this.cancelShipment(
-              tenantId,
-              functionArgs.tracking_number,
-              functionArgs.reason
-            )
-            break
-            
-          case 'get_customer_shipments':
-            functionResult = await this.getCustomerShipments(
-              tenantId,
-              functionArgs.customer_phone,
-              functionArgs.customer_name
-            )
-            break
-            
-          case 'get_courier_stats':
-            functionResult = await this.getCourierStats(
-              tenantId,
-              functionArgs.courier,
-              functionArgs.date_range
-            )
-            break
-            
-          case 'create_shipment':
-            functionResult = await this.createShipment(tenantId, functionArgs)
-            break
-            
-          case 'get_revenue_stats':
-            functionResult = await this.getRevenueStats(
-              tenantId,
-              functionArgs.period,
-              functionArgs.courier
-            )
-            break
-            
-          case 'search_by_amount':
-            functionResult = await this.searchByAmount(
-              tenantId,
-              functionArgs.min_amount,
-              functionArgs.max_amount
-            )
-            break
-            
-          default:
-            throw new Error(`Unknown function: ${functionName}`)
-        }
-
-        // Get GPT's response to the function result
-        const followUpCompletion = await openai.chat.completions.create({
-          model: 'gpt-4',
-          messages: [
-            ...messages as any,
-            response,
-            {
-              role: 'function',
-              name: functionName,
-              content: JSON.stringify(functionResult, null, 2)
-            }
-          ],
-          max_tokens: 1000,
-          temperature: 0.1
-        })
-
-        const finalResponse = followUpCompletion.choices[0]?.message?.content
-
-        return {
-          success: true,
-          message: finalResponse,
-          function_called: functionName,
-          function_result: functionResult,
-          tokens_used: completion.usage?.total_tokens || 0
-        }
-      } else {
-        // Regular response without function call
-        return {
-          success: true,
-          message: response?.content,
-          tokens_used: completion.usage?.total_tokens || 0
-        }
-      }
-    } catch (error: any) {
-      console.error('Advanced GPT query error:', error)
-      return {
-        success: false,
-        error: error.message || 'Failed to process query'
-      }
-    }
-  }
-}
-
-// Export singleton instance
-export const advancedGPT = new AdvancedGPTService()
