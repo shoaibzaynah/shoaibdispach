@@ -38,10 +38,17 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Get user tenant_id for logging
+    const { data: userData } = await supabase
+      .from('users')
+      .select('tenant_id')
+      .eq('id', user.id)
+      .single()
+
     // Log the interaction
     await supabase.from('gpt_logs').insert({
       user_id: user.id,
-      tenant_id: (await supabase.from('users').select('tenant_id').eq('id', user.id).single()).data?.tenant_id,
+      tenant_id: userData?.tenant_id,
       feature: 'advanced_assistant',
       prompt: message,
       response: result.message,
