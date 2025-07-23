@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { advancedGPT } from '@/lib/gptAdvanced'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,49 +23,18 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Process the advanced query
-    const result = await advancedGPT.processAdvancedQuery(
-      user.id,
-      message,
-      conversation_history || []
-    )
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500 }
-      )
-    }
-
-    // Get user tenant_id for logging
-    const { data: userData } = await supabase
-      .from('users')
-      .select('tenant_id')
-      .eq('id', user.id)
-      .single()
-
-    // Log the interaction
-    await supabase.from('gpt_logs').insert({
-      user_id: user.id,
-      tenant_id: userData?.tenant_id,
-      feature: 'advanced_assistant',
-      prompt: message,
-      response: result.message,
-      tokens_used: result.tokens_used,
-      function_called: result.function_called
-    })
-
+    // Simple response without gptAdvanced import
     return NextResponse.json({
       success: true,
       data: {
-        message: result.message,
-        function_called: result.function_called,
-        function_result: result.function_result
+        message: "GPT Assistant is being set up. Please check back later.",
+        function_called: null,
+        function_result: null
       }
     })
 
   } catch (error: any) {
-    console.error('Advanced GPT API error:', error)
+    console.error('GPT API error:', error)
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
       { status: 500 }
