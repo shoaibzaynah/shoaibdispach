@@ -73,7 +73,6 @@ export default async function AdminDashboardPage() {
     .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
 
   const totalTokensUsed = gptUsage?.reduce((sum, log) => sum + (log.tokens_used || 0), 0) || 0
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
