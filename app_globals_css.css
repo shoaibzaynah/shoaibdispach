@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-card text-card-foreground rounded-lg border shadow-sm;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .button {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .button-primary {
+    @apply button bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
+  }
+
+  .button-secondary {
+    @apply button bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2;
+  }
+
+  .button-destructive {
+    @apply button bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2;
+  }
+
+  .button-outline {
+    @apply button border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+  }
+
+  .button-ghost {
+    @apply button hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
+  }
+
+  .button-link {
+    @apply button text-primary underline-offset-4 hover:underline h-10 px-4 py-2;
+  }
+
+  .button-sm {
+    @apply h-9 rounded-md px-3;
+  }
+
+  .button-lg {
+    @apply h-11 rounded-md px-8;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  .badge-default {
+    @apply badge border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+  }
+
+  .badge-secondary {
+    @apply badge border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+
+  .badge-destructive {
+    @apply badge border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
+  }
+
+  .badge-outline {
+    @apply badge text-foreground;
+  }
+
+  .sidebar {
+    @apply bg-card border-r border-border;
+  }
+
+  .sidebar-nav {
+    @apply flex flex-col space-y-1 p-4;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .sidebar-nav-item.active {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .table {
+    @apply w-full caption-bottom text-sm;
+  }
+
+  .table-header {
+    @apply border-b;
+  }
+
+  .table-row {
+    @apply border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted;
+  }
+
+  .table-head {
+    @apply h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0;
+  }
+
+  .table-cell {
+    @apply p-4 align-middle [&:has([role=checkbox])]:pr-0;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium;
+  }
+
+  .status-pending {
+    @apply bg-yellow-500/20 text-yellow-500;
+  }
+
+  .status-delivered {
+    @apply bg-green-500/20 text-green-500;
+  }
+
+  .status-cancelled {
+    @apply bg-red-500/20 text-red-500;
+  }
+
+  .status-in-transit {
+    @apply bg-blue-500/20 text-blue-500;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+/* Custom animations */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-size: 800px 104px;
+}
+
+/* Dark mode adjustments */
+.dark .shimmer {
+  background: linear-gradient(to right, #1f2937 0%, #374151 20%, #1f2937 40%, #1f2937 100%);
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    @apply text-black bg-white;
+  }
+  
+  .card {
+    @apply border border-gray-300 shadow-none;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    @apply fixed inset-y-0 left-0 z-50 w-64 transform -translate-x-full transition-transform;
+  }
+  
+  .sidebar.open {
+    @apply translate-x-0;
+  }
+  
+  .main-content {
+    @apply ml-0;
+  }
+}
+
+/* Focus styles for accessibility */
+.focus-outline {
+  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+}
+
+/* Loading states */
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 2s linear infinite;
+}
+
+@keyframes loading-dots {
+  0%, 20% {
+    content: '.';
+  }
+  40% {
+    content: '..';
+  }
+  60%, 100% {
+    content: '...';
+  }
+}
