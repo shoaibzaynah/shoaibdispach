@@ -2,262 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-    --radius: 0.75rem;
-  }
+body {
+  background-color: #0f172a;
+  color: #f1f5f9;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
+.card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 16px;
 }
 
-@layer components {
-  .card {
-    @apply bg-card text-card-foreground rounded-lg border shadow-sm;
-  }
-
-  .input {
-    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  .button {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
-  }
-
-  .button-primary {
-    @apply button bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2;
-  }
-
-  .button-secondary {
-    @apply button bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2;
-  }
-
-  .button-destructive {
-    @apply button bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2;
-  }
-
-  .button-outline {
-    @apply button border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
-  }
-
-  .button-ghost {
-    @apply button hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2;
-  }
-
-  .button-link {
-    @apply button text-primary underline-offset-4 hover:underline h-10 px-4 py-2;
-  }
-
-  .button-sm {
-    @apply h-9 rounded-md px-3;
-  }
-
-  .button-lg {
-    @apply h-11 rounded-md px-8;
-  }
-
-  .badge {
-    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-  }
-
-  .badge-default {
-    @apply badge border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
-  }
-
-  .badge-secondary {
-    @apply badge border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
-  }
-
-  .badge-destructive {
-    @apply badge border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80;
-  }
-
-  .badge-outline {
-    @apply badge text-foreground;
-  }
-
-  .sidebar {
-    @apply bg-card border-r border-border;
-  }
-
-  .sidebar-nav {
-    @apply flex flex-col space-y-1 p-4;
-  }
-
-  .sidebar-nav-item {
-    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground;
-  }
-
-  .sidebar-nav-item.active {
-    @apply bg-accent text-accent-foreground;
-  }
-
-  .table {
-    @apply w-full caption-bottom text-sm;
-  }
-
-  .table-header {
-    @apply border-b;
-  }
-
-  .table-row {
-    @apply border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted;
-  }
-
-  .table-head {
-    @apply h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0;
-  }
-
-  .table-cell {
-    @apply p-4 align-middle [&:has([role=checkbox])]:pr-0;
-  }
-
-  .status-badge {
-    @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium;
-  }
-
-  .status-pending {
-    @apply bg-yellow-500/20 text-yellow-500;
-  }
-
-  .status-delivered {
-    @apply bg-green-500/20 text-green-500;
-  }
-
-  .status-cancelled {
-    @apply bg-red-500/20 text-red-500;
-  }
-
-  .status-in-transit {
-    @apply bg-blue-500/20 text-blue-500;
-  }
-
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-
-  .animate-bounce-slow {
-    animation: bounce 2s infinite;
-  }
+.button-primary {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
-  .scrollbar-thin {
-    scrollbar-width: thin;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
-  }
+.button-outline {
+  border: 1px solid #334155;
+  background-color: transparent;
+  padding: 8px 16px;
+  border-radius: 6px;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -468px 0;
-  }
-  100% {
-    background-position: 468px 0;
-  }
+.input {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  width: 100%;
 }
 
-.shimmer {
-  animation: shimmer 2s linear infinite;
-  background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
-  background-size: 800px 104px;
+.status-pending {
+  background-color: rgba(234, 179, 8, 0.2);
+  color: #eab308;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
 }
 
-.dark .shimmer {
-  background: linear-gradient(to right, #1f2937 0%, #374151 20%, #1f2937 40%, #1f2937 100%);
+.status-delivered {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
 }
 
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  body {
-    @apply text-black bg-white;
-  }
-  
-  .card {
-    @apply border border-gray-300 shadow-none;
-  }
+.status-cancelled {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    @apply fixed inset-y-0 left-0 z-50 w-64 transform -translate-x-full transition-transform;
-  }
-  
-  .sidebar.open {
-    @apply translate-x-0;
-  }
-  
-  .main-content {
-    @apply ml-0;
-  }
-}
-
-.focus-outline {
-  @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-}
-
-.loading-dots::after {
-  content: '';
-  animation: loading-dots 2s linear infinite;
-}
-
-@keyframes loading-dots {
-  0%, 20% {
-    content: '.';
-  }
-  40% {
-    content: '..';
-  }
-  60%, 100% {
-    content: '...';
-  }
+.status-in-transit {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
 }
